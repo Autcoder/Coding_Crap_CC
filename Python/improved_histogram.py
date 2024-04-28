@@ -4,25 +4,20 @@ import pandas as pd
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import seaborn as sns
-from alive_progress import alive_bar
-from fileinput import filename
+import time
 from tkinter.filedialog import askopenfilename
 
-def rgb_histogram(image, filename):
+def rgb_histogram(image):
     r, g, b = image[:,:,0], image[:,:,1], image[:,:,2]
 
-    r_hist, bins = np.histogram(r, bins=256, range=(0,256))
-    g_hist, bins = np.histogram(g, bins=256, range=(0,256))
-    b_hist, bins = np.histogram(b, bins=256, range=(0,256))
+    r_hist, _ = np.histogram(r, bins=256, range=(0,256))
+    g_hist, _ = np.histogram(g, bins=256, range=(0,256))
+    b_hist, _ = np.histogram(b, bins=256, range=(0,256))
 
-    bright = np.zeros(256)
-    for i in range(image.shape[0]):
-        for j in range(image.shape[1]):
-            brightnes = sum(image[i,j,:])//3
-            bright[brightnes] += 1
+    bright_hist, _ = np.histogram(np.sum(image, axis=2) // 3, bins=256, range=(0,256))
 
     bright_values = np.arange(0,256, dtype=int)
-    df = pd.DataFrame({'brightness':bright_values, 'brightness_count':bright, 'red_count':r_hist, 'green_count':g_hist, 'blue_count':b_hist})
+    df = pd.DataFrame({'brightness':bright_values, 'brightness_count':bright_hist, 'red_count':r_hist, 'green_count':g_hist, 'blue_count':b_hist})
 
     data_preproc = pd.melt(df, id_vars=['brightness'], value_vars=['brightness_count', 'red_count', 'green_count', 'blue_count'], var_name='color', value_name='count')
 
@@ -35,7 +30,7 @@ def rgb_histogram(image, filename):
     ax.fill_between(bright_values, r_hist, color='r', alpha=0.7)
     ax.fill_between(bright_values, g_hist, color='g', alpha=0.7)
     ax.fill_between(bright_values, b_hist, color='b', alpha=0.7)
-    ax.fill_between(bright_values, bright, color='#c7c7c7')
+    ax.fill_between(bright_values, bright_hist, color='#c7c7c7')
     ax.set_xlabel('Brightness')
     ax.set_ylabel('Count')
     ax.set_title('RGB Histogram')
@@ -52,9 +47,11 @@ filename = askopenfilename(title='Select an image file', filetypes=[('Image file
 image = cv2.imread(filename)
 height, width, _ = image.shape
 total_pixels = height * width
-with alive_bar(total_pixels) as bar:
-    for i in range(height):
-        for j in range(width):
-            bar()
-bar(height * width)
-rgb_histogram(image, filename)
+print(f"Total pixels: {total_pixels}")
+start_time = time.time()
+for i in range(height):
+    for j in range(width):
+        pass
+end_time = time.time()
+print(f"Processing time: {end_time - start_time:.4f} seconds")
+rgb_histogram(image)
