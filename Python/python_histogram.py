@@ -48,7 +48,7 @@ def rgb_histogram(image, filename):
     plt.savefig('histogram.png', dpi=300)
     print("Histogram saved as 'histogram.png'")
 
-filename = askopenfilename(title='Select an image file', filetypes=[('Image files', '*.jpg *.jpeg *.png *.bmp *.tiff')])
+filename = askopenfilename(title='Select an image file', filetypes=[('Image files', '*.jpg *.jpeg *.png *.bmp *.tiff *.JPG')])
 image = cv2.imread(filename)
 height, width, _ = image.shape
 total_pixels = height * width
