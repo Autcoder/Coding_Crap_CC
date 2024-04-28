@@ -48,10 +48,8 @@ image = cv2.imread(filename)
 height, width, _ = image.shape
 total_pixels = height * width
 print(f"Total pixels: {total_pixels}")
+print(f"Total pixels: {total_pixels}")
 start_time = time.time()
-for i in range(height):
-    for j in range(width):
-        pass
+rgb_histogram(image)
 end_time = time.time()
 print(f"Processing time: {end_time - start_time:.4f} seconds")
-rgb_histogram(image)
